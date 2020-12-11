@@ -3,14 +3,15 @@ import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class ClientHandler implements Runnable  {
     Socket incoming;
-    InputStream inStream;
-    Scanner in;
-    OutputStream outStream;
+    ObjectOutputStream outStream;
+    ObjectInputStream inStream;
     PrintWriter out;
+    Scanner in;
 
     User u;
 
@@ -21,14 +22,18 @@ public class ClientHandler implements Runnable  {
 
     public void run() {
         try {
+            outStream = new ObjectOutputStream(incoming.getOutputStream());
+            inStream = new ObjectInputStream(incoming.getInputStream());
 
-            inStream = incoming.getInputStream();
-            outStream = incoming.getOutputStream();
+            Date d  = (Date)inStream.readObject();
 
-            in = new Scanner(inStream, "UTF-8");
-            out = new PrintWriter(new OutputStreamWriter(outStream, "UTF-8"), true);
+            System.out.println(d.toString());
 
 
+        }catch(IOException | ClassNotFoundException e){
+            try{e.printStackTrace();incoming.close();}catch(IOException e1){e1.printStackTrace();}
+        }finally{
+            try{incoming.close();}catch(IOException e){e.printStackTrace();}
         }
     }
 }

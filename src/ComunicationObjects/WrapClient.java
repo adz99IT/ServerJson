@@ -1,6 +1,8 @@
 package ComunicationObjects;
 
-public class WrapClient {
+import java.io.Serializable;
+
+public class WrapClient implements Serializable {
     private String fromMail;
     private String encryptedPassword;
     private Object payload;
