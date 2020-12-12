@@ -1,5 +1,4 @@
-import ComunicationObjects.ReplySendEmail;
-import ComunicationObjects.RequestSendEmail;
+import ComunicationObjects.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -164,6 +163,69 @@ public class Model {
         return new ReplySendEmail(exitCode, notDelivered);
     }
 
+    public static ReplyEmailCancellation deleteEmail(RequestEmailCancellation r, User u){
+        File file = null;
+        String s = null;
+        int exitCode = 1;
+        Gson gson = new Gson();
+        ArrayList<UUID> deleted = new ArrayList<>();
+        FileWriter fw = null;
+
+        if(r == null || r.getIdMail().size() < 1) {
+            System.out.println("Err1");
+            return new ReplyEmailCancellation(-3, null);
+        }
+
+        file = new File(System.getProperty("user.dir") + "/files/mails/" + u.getFile());
+        if (!file.exists()) {
+            System.out.println("Err2");
+            return new ReplyEmailCancellation(-3, null);
+        }
+        else {
+            try {
+                byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                s = new String(encoded, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                System.out.println("Err3");
+                return new ReplyEmailCancellation(-3, null);
+            }
+
+            ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
+            }.getType());
+            if(allEmails.size() == 0){
+                System.out.println("Err4");
+                return new ReplyEmailCancellation(-3, null);
+            }
+            b:for(UUID id : r.getIdMail()){
+                for(Email e : allEmails){
+                    if(id.toString().equals(e.getUuid().toString())){
+                        allEmails.remove(e);
+                        deleted.add(id);
+                        continue b;
+                    }
+                }
+                exitCode = -2;
+            }
+            System.out.println(exitCode);
+            exitCode = deleted.size() == 0 ? -3 : exitCode;
+            System.out.println(exitCode);
+
+            try {
+                fw = new FileWriter(file);
+                fw.write(gson.toJson(allEmails));
+            } catch (IOException e) {
+                return new ReplyEmailCancellation(-3, null);
+            } finally {
+                try {
+                    fw.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return new ReplyEmailCancellation(exitCode, deleted);
+        }
+    }
+
     public static User newUser(String name, String surname, String email, String password, Boolean passwordIsEncrypted){
         User u = null;
         File file = null;
@@ -226,7 +288,6 @@ public class Model {
                 "A-Z]{2,7}$";
 
         Pattern pat = Pattern.compile(emailRegex);
-        System.out.println("--"+pat.matcher(email).matches());
         if (email == null)
             return false;
         return pat.matcher(email).matches();

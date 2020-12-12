@@ -24,20 +24,26 @@ public class ClientHandler implements Runnable  {
             inStream = new ObjectInputStream(incoming.getInputStream());
 
             Object obj = inStream.readObject();
-            System.out.println(obj.getClass().toString());
+            //System.out.println(obj.getClass().toString());
             if(obj instanceof RequestSendEmail){
                 RequestSendEmail r = (RequestSendEmail)obj;
                 if(login(r)){
                     outStream.writeObject(Model.send(u, r));
-                }else
+                } else
                     outStream.writeObject(new ReplySendEmail());
-            }else if(obj instanceof Login){
+            } else if(obj instanceof RequestEmailCancellation){
+                RequestEmailCancellation r = (RequestEmailCancellation)obj;
+                if(login(r)){
+                    outStream.writeObject(Model.deleteEmail(r, u));
+                } else
+                    outStream.writeObject(new ReplyEmailCancellation());
+            } else if(obj instanceof Login){
                 Login l = (Login)obj;
                 if((u=Model.authenticate(l.getUserMail(), l.getEncryptedPassword())) != null)
                     outStream.writeObject(new ReplyLogin(u.getName()));
                 else
                     outStream.writeObject(new ReplyLogin());
-            }else{
+            } else{
                 System.out.println("NO");
             }
 

@@ -40,4 +40,8 @@ public class Email {
     public String getText() {
         return text;
     }
+
+    public String getUuid() {
+        return uuid;
+    }
 }
