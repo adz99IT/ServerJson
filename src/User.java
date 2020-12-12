@@ -1,9 +1,12 @@
+
+
 public class User {
     private String name;
     private String surname;
     private String email;
     private String password;
     private String file;
+
 
     public User(String name, String surname, String email, String password, String file) {
         this.name = name;
@@ -25,8 +28,8 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean testPassword(String password) {
+        return this.password.equals(password);
     }
 
     public String getFile() {

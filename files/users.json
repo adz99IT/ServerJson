@@ -1,0 +1,23 @@
+ [
+    {
+      "name":"Alessandro",
+      "surname":"Di Zitti",
+      "email":"alessandrodizitti@gmail.com",
+      "password": "3f557ea4f0c3fec215ff5cf0727884113757c477f1a3d7f60d7fa623df00ccf0",
+      "file": "1233w2.json"
+    },
+    {
+      "name":"Michele",
+      "surname":"Fiorelli",
+      "email":"michelefiorelli99@gmail.com",
+      "password": "michele1",
+      "file": "223w2.json"
+    },
+    {
+      "name":"Mario",
+      "surname":"Rossi",
+      "email":"mariorossi@gmail.com",
+      "password": "d70a02385efd5aed9a06921924c23f4467da827d03513530f2ab1daf40cd69dd",
+      "file": "as22.json"
+    }
+ ]
