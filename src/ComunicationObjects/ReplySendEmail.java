@@ -1,8 +1,9 @@
 package ComunicationObjects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ReplySendEmail implements Reply{
+public class ReplySendEmail implements Reply, Serializable {
     int exitCode; //-1 invalid login //-2 some failed //-3 all failed //1- all sent
     ArrayList<String> notDelivered;
 
@@ -17,6 +18,6 @@ public class ReplySendEmail implements Reply{
     }
 
     public int getExitCode(){
-        return 1;
+        return exitCode;
     }
 }

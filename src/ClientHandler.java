@@ -40,23 +40,7 @@ public class ClientHandler implements Runnable  {
             }else{
                 System.out.println("NO");
             }
-            /*switch(obj.getClass().toString()){
-                case "class ComunicationObjects.Login":
-                    Login l = (Login)obj;
-                    if((u=Model.authenticate(l.getUserMail(), l.getEncryptedPassword())) != null)
-                        outStream.writeObject(new ReplyLogin(u.getName()));
-                    else
-                        outStream.writeObject(new ReplyLogin());
-                    break;
 
-                case "class ComunicationObjects.RequestSendEmail":
-                    RequestSendEmail r = (RequestSendEmail)obj;
-                    System.out.println(r.getSubject());
-                    break;
-
-                default:
-                    System.out.println("NO");
-            }*/
         }catch(IOException | ClassNotFoundException e){
             try{e.printStackTrace();incoming.close();}catch(IOException e1){e1.printStackTrace();}
         }finally{

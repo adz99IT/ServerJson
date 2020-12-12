@@ -6,12 +6,16 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 //questa classe dispone dei metodi per controllare i dati
 public class Model {
@@ -23,6 +27,8 @@ public class Model {
     public static User authenticate(String email, String password) {
         File file = new File(System.getProperty("user.dir") + "/files/users.json");
         String s;
+        if(!isEmailValid(email))
+            return null;
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
             s = new String(encoded, StandardCharsets.UTF_8);
@@ -91,7 +97,7 @@ public class Model {
     }
 
     private static ReplySendEmail saveEmail(Email mail, ArrayList<User> toUsers, ArrayList<String> notDelivered) {
-        int exitCode = 1;
+        int exitCode = notDelivered.size() > 0 ? -2 : 1;
         Gson gson = new Gson();
 
         if (mail == null || toUsers == null || toUsers.size() < 1) {
@@ -156,5 +162,95 @@ public class Model {
         if(toUsers.size() < 1)
             exitCode = -3;
         return new ReplySendEmail(exitCode, notDelivered);
+    }
+
+    public static User newUser(String name, String surname, String email, String password, Boolean passwordIsEncrypted){
+        User u = null;
+        File file = null;
+        FileWriter fw = null;
+        String s;
+
+        if(name == null || surname == null || email == null || !isEmailValid(email) || password == null || password.length() < 1 || passwordIsEncrypted == null)
+            return null;
+        u = new User(name, surname, email, passwordIsEncrypted ? password : digest("SHA-256", password), UUID.randomUUID().toString()+".json");
+
+        file = new File(System.getProperty("user.dir") + "/files/users.json");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            return null;
+        }
+
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+            s = new String(encoded, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Gson gson = new Gson();
+        ArrayList<User> allUsers = gson.fromJson(s, new TypeToken<ArrayList<User>>() {
+        }.getType());
+        if(allUsers != null) {
+            for (User user : allUsers) {
+                if (user.getEmail().equals(email)) {
+                    return user;
+                }
+            }
+            allUsers.add(u);
+        }
+        else
+            allUsers = new ArrayList<User>();
+
+        try {
+            fw = new FileWriter(file);
+            fw.write(gson.toJson(allUsers));
+        } catch (IOException e) {
+            u = null;
+        } finally {
+            try {
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return u;
+    }
+
+    public static boolean isEmailValid(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        System.out.println("--"+pat.matcher(email).matches());
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
+
+    //I seguenti due metodi criptano le pass (quando si genera un nuovo utente)
+    public static String digest(String alg, String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(alg);
+            byte[] buffer = input.getBytes("UTF-8");
+            md.update(buffer);
+            byte[] digest = md.digest();
+            return encodeHex(digest);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    private static String encodeHex(byte[] digest) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < digest.length; i++) {
+            sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
     }
 }
