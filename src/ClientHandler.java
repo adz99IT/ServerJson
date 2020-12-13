@@ -37,6 +37,13 @@ public class ClientHandler implements Runnable  {
                     outStream.writeObject(Model.deleteEmail(r, u));
                 } else
                     outStream.writeObject(new ReplyEmailCancellation());
+            } else if(obj instanceof RequestDownloadEmail){
+                RequestDownloadEmail r = (RequestDownloadEmail)obj;
+                if(login(r)){
+                    outStream.writeObject(Model.downloadEmail(r, u));
+                } else
+                    outStream.writeObject(new ReplyDownloadEmail(-1, null));
+
             } else if(obj instanceof Login){
                 Login l = (Login)obj;
                 if((u=Model.authenticate(l.getUserMail(), l.getEncryptedPassword())) != null)

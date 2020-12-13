@@ -1,7 +1,10 @@
+package ComunicationObjects;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Email {
+public class Email implements Comparable<Email>, Serializable {
     private String uuid;
     private Date date;
     private String from;
@@ -43,5 +46,22 @@ public class Email {
 
     public String getUuid() {
         return uuid;
+    }
+
+    //usato per comparare le mail cronologicamente
+    public int compareTo(Email o) {
+        if(this.date == null && o.date == null)
+            return 0;
+        if(this.date == null)
+            return -1;
+        if(o.date == null)
+            return 1;
+
+        if(this.date.equals(o.date) )
+            return 0;
+        if(this.date.before(o.date) )
+            return -1;
+        else
+            return 1;
     }
 }

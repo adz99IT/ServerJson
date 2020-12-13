@@ -171,7 +171,7 @@ public class Model {
         ArrayList<UUID> deleted = new ArrayList<>();
         FileWriter fw = null;
 
-        if(r == null || r.getIdMail().size() < 1) {
+        if(r == null || r.getIdMail().size() < 1 || u == null) {
             System.out.println("Err1");
             return new ReplyEmailCancellation(-3, null);
         }
@@ -223,6 +223,47 @@ public class Model {
                 }
             }
             return new ReplyEmailCancellation(exitCode, deleted);
+        }
+    }
+
+    public static ReplyDownloadEmail downloadEmail(RequestDownloadEmail r, User u) {
+        File file = null;
+        String s = null;
+        int exitCode = 1;
+        Gson gson = new Gson();
+        ArrayList<UUID> deleted = new ArrayList<>();
+        FileWriter fw = null;
+
+        if (r == null || u == null) {
+            System.out.println("Err1");
+            return new ReplyDownloadEmail(-3, null);
+        }
+
+        file = new File(System.getProperty("user.dir") + "/files/mails/" + u.getFile());
+        if (!file.exists()) {
+            System.out.println("Err2");
+            return new ReplyDownloadEmail(1, new ArrayList<Email>());
+        } else {
+            try {
+                byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                s = new String(encoded, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                System.out.println("Err3");
+                return new ReplyDownloadEmail(-3, null);
+            }
+
+            ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
+            }.getType());
+            if (allEmails.size() == 0) {
+                System.out.println("Err4");
+                return new ReplyDownloadEmail(1, new ArrayList<Email>());
+            }
+
+            if (r.getSinceDate() != null)
+                allEmails.removeIf(e -> (e.getDate().before(r.getSinceDate())));
+
+            System.out.println(allEmails.size() + " mails trovate.");
+            return new ReplyDownloadEmail(1, allEmails);
         }
     }
 
