@@ -1,3 +1,6 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,6 +10,9 @@ public class ClientListener extends Thread {
     private ThreadGroup clients;
     private Model m;
     private int port;
+
+    @FXML
+    private Button button;
 
 
     public ClientListener(Model m, int port){

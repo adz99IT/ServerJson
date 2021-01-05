@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 
 public class Controller {
     private Model m;
@@ -20,6 +21,13 @@ public class Controller {
             start();
         }
     }
+
+    public void buttonHandler(ActionEvent actionEvent) {
+        //
+
+    }
+
+
 
     /*@FXML
     public void buttonHandler(ActionEvent actionEvent) {

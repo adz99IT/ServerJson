@@ -45,6 +45,10 @@ public class View extends Application implements Initializable {
         primaryStage.show();
     }
 
+    public void saluta(){
+        System.out.println("Ciao");
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println(",,");
@@ -53,11 +57,6 @@ public class View extends Application implements Initializable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-    }
-
-    public void buttonHandler(ActionEvent actionEvent) {
-
-
     }
 
 }
