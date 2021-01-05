@@ -4,26 +4,31 @@ import java.net.Socket;
 
 //ClientListener si mette in attesa di connessioni.
 public class ClientListener extends Thread {
-    ThreadGroup clients;
+    private ThreadGroup clients;
+    private Model m;
+    private int port;
 
 
-    public ClientListener(){
+    public ClientListener(Model m, int port){
+        this.m = m;
+        this.port = port;
         start();
     }
 
     public void run() {
         clients = new ThreadGroup("clients");
         try {
-            ServerSocket s = new ServerSocket(8189);
+            ServerSocket s = new ServerSocket(port);
 
-            while (true) {
+            while (m.getState() == true) {
                 Socket incoming = s.accept();
-                System.out.println("A new client has just connected. Current clients online: "+(getNumberOfClients()+1));
+                //System.out.println("A new client has just connected. Current clients online: "+(getNumberOfClients()+1));
                 Runnable r = new ClientHandler(incoming);
                 new Thread(clients, r).start();
             }
         }
         catch (IOException e) {e.printStackTrace();}
+
     }
 
     public int getNumberOfClients(){

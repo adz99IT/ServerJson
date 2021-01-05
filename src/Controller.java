@@ -1,11 +1,37 @@
-import ComunicationObjects.User;
+import javafx.application.Application;
 
 public class Controller {
-    public static void main(String[] args){
-        ClientListener cl = new ClientListener();
-        //ComunicationObjects.User a = Model.newUser("Andrea","Rossi", "andrearossi@progtre.it", "andrea1", false);
-        User b = Model.newUser("Alessandro","Di Zitti", "alessandrodizitti@progtre.it", "alessandro1", false);
-        User c = Model.newUser("Michele","Fiorelli", "michelefiorelli@progtre.it", "michele1", false);
+    private Model m;
 
+
+    public void start(){
+        //////SETTINGS
+        int port =  8189;
+        String ipServer = "poggivpn.ddns.net";
+        //////////////
+
+        ClientListener cl = new ClientListener(m, port); //thread del controller che gestisce i socket in ingresso
+        Application.launch(View.class, ipServer, Integer.toString(port));
     }
+
+    public void setModel(Model m){
+        if(this.m == null) {
+            this.m = m;
+            start();
+        }
+    }
+
+    /*@FXML
+    public void buttonHandler(ActionEvent actionEvent) {
+        m.setState(!m.getState());
+        if(m.getState()) {
+            button.setText("TURN OFF");
+            button.setStyle("-fx-background-color: #42f548; ");
+        }else{
+            button.setText("TURN ON");
+            button.setStyle("-fx-background-color: #fa1100; ");
+        }
+        System.out.println(m.getState());
+    }*/
+
 }

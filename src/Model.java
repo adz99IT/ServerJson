@@ -18,10 +18,22 @@ import java.util.regex.Pattern;
 
 //questa classe dispone dei metodi per controllare i dati
 public class Model {
-    private int usersNumber;
+    private boolean isOnline;
+    private Controller c;
 
-    //aggiungere un contatore (esclusivo con semafori tipo) per creare l'id delle mail
+    public Model(boolean isOnline, Controller c) {
+        this.isOnline = isOnline;
+        this.c = c;
+    }
 
+    public boolean setState(boolean newState){
+        this.isOnline = newState;
+        return this.isOnline;
+    }
+
+    public boolean getState(){
+        return isOnline;
+    }
 
     public static User authenticate(String email, String password) {
         File file = new File(System.getProperty("user.dir") + "/files/users.json");
@@ -241,7 +253,6 @@ public class Model {
 
         file = new File(System.getProperty("user.dir") + "/files/mails/" + u.getFile());
         if (!file.exists()) {
-            System.out.println("Err2");
             return new ReplyDownloadEmail(1, new ArrayList<Email>());
         } else {
             try {
@@ -260,7 +271,7 @@ public class Model {
             }
 
             if (r.getSinceDate() != null)
-                allEmails.removeIf(e -> (e.getDate().before(r.getSinceDate())));
+                System.out.println(allEmails.removeIf(e -> e.getDate().before(r.getSinceDate())));
 
             System.out.println(allEmails.size() + " mails trovate.");
             return new ReplyDownloadEmail(1, allEmails);
