@@ -1,6 +1,7 @@
 package it.adz.prog3.mail.controller;
 import it.adz.prog3.mail.comunicationobjects.*;
 import it.adz.prog3.mail.model.*;
+import javafx.application.Platform;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,10 +16,12 @@ public class ClientHandler implements Runnable  {
 
     Model m;
     User u;
+    Controller c;
 
-    public ClientHandler(Socket incoming, Model m) {
+    public ClientHandler(Socket incoming, Model m, Controller c) {
         this.incoming = incoming;
         this.m = m;
+        this.c = c;
         u = null;
     }
 
@@ -29,38 +32,49 @@ public class ClientHandler implements Runnable  {
             inStream = new ObjectInputStream(incoming.getInputStream());
 
             Object obj = inStream.readObject();
-            //System.out.println(obj.getClass().toString());
+
             if(obj instanceof RequestSendEmail){
-                System.out.println("New SendEmail Request");
                 RequestSendEmail r = (RequestSendEmail)obj;
                 if(login(r)){
                     outStream.writeObject(Model.send(u, r));
-                } else
+                    updateLog(u.getName() + " " + u.getSurname() + " has sent a mail.");
+                } else {
                     outStream.writeObject(new ReplySendEmail());
+                    updateLog("WARRING: a request (RequestSendEmail) was received with wrong credentials.");
+                }
             } else if(obj instanceof RequestEmailCancellation){
                 System.out.println("New EmailCancellation Request");
                 RequestEmailCancellation r = (RequestEmailCancellation)obj;
                 if(login(r)){
                     outStream.writeObject(Model.deleteEmail(r, u));
-                } else
+                    updateLog(u.getName() + " " + u.getSurname() + " has deleted some mails.");
+                } else {
                     outStream.writeObject(new ReplyEmailCancellation());
+                    updateLog("WARRING: a request (RequestEmailCancellation) was received with wrong credentials.");
+                }
             } else if(obj instanceof RequestDownloadEmail){
                 System.out.println("New DownloadEmail Request");
                 RequestDownloadEmail r = (RequestDownloadEmail)obj;
                 if(login(r)){
                     outStream.writeObject(Model.downloadEmail(r, u));
-                } else
+                    updateLog(u.getName() + " " + u.getSurname() + " has downloaded his mail"+ (r.getSinceDate() != null ? " since "+r.getSinceDate() : "") +".");
+                } else {
                     outStream.writeObject(new ReplyDownloadEmail(-1, null));
+                    updateLog("WARRING: a request (RequestDownloadEmail) was received with wrong credentials.");
+                }
             } else if(obj instanceof Login){
-                System.out.println("New Login Request");
                 Login l = (Login)obj;
                 System.out.println(l.getUserMail()+" "+l.getEncryptedPassword());
-                if((u=Model.authenticate(l.getUserMail(), l.getEncryptedPassword())) != null)
+                if((u=Model.authenticate(l.getUserMail(), l.getEncryptedPassword())) != null) {
                     outStream.writeObject(new ReplyLogin(u.getName()));
-                else
+                    updateLog(u.getName() + " " + u.getSurname() + " has just logged.");
+                }
+                else {
                     outStream.writeObject(new ReplyLogin());
+                    updateLog("WARRING: login attempt failed.");
+                }
             } else{
-                System.out.println("NO");
+                updateLog("WARRING: an unknown object has been received. It will be ignored.");
             }
 
         }catch(IOException | ClassNotFoundException e){
@@ -79,5 +93,11 @@ public class ClientHandler implements Runnable  {
                 return false;
             }
         }catch(Exception e){return false;}
+    }
+
+    private void updateLog(String s){
+        Platform.runLater(() ->{
+            c.updateLog(s);
+        });
     }
 }

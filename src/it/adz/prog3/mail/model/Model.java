@@ -3,11 +3,13 @@ package it.adz.prog3.mail.model;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.adz.prog3.mail.comunicationobjects.*;
+import it.adz.prog3.mail.controller.Controller;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,8 +22,6 @@ import java.util.regex.Pattern;
 
 //questa classe dispone dei metodi per controllare i dati
 public class Model {
-
-    public synchronized String log;
 
     public static User authenticate(String email, String password) {
         File file = new File(System.getProperty("user.dir") + "/files/users.json");

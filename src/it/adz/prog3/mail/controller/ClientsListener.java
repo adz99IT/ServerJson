@@ -1,5 +1,6 @@
 package it.adz.prog3.mail.controller;
 import it.adz.prog3.mail.model.Model;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -25,20 +26,17 @@ public class ClientsListener extends Thread {
         clients = new ThreadGroup("clients");
         try {
             s = new ServerSocket(8189);
+            Platform.runLater(() ->{
+                c.updateLog("Server started.");
+            });
             while (true) {
                 if(s != null && !s.isClosed()) {
                     Socket incoming = s.accept();
-                    System.out.println("A new client has just connected. Current clients online: "+(getNumberOfClients()+1));
-                    Runnable r = new ClientHandler(incoming, m);
+                    Runnable r = new ClientHandler(incoming, m, c);
                     new Thread(clients, r).start();
                 }
             }
         }
         catch (IOException e) {e.printStackTrace();}
-    }
-
-    public int getNumberOfClients(){
-        //notifica la view, da aggiungere.
-        return clients.activeCount();
     }
 }
