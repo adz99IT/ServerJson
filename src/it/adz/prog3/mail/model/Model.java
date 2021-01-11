@@ -254,7 +254,6 @@ public class Model {
             ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
             }.getType());
             if (allEmails.size() == 0) {
-                System.out.println("Err4");
                 return new ReplyDownloadEmail(1, new ArrayList<Email>());
             }
 

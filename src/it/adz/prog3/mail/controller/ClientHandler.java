@@ -53,11 +53,13 @@ public class ClientHandler implements Runnable  {
                     updateLog("WARRING: a request (RequestEmailCancellation) was received with wrong credentials.");
                 }
             } else if(obj instanceof RequestDownloadEmail){
-                System.out.println("New DownloadEmail Request");
+                System.out.println("New DownloadEmail Request "+new Date());
                 RequestDownloadEmail r = (RequestDownloadEmail)obj;
                 if(login(r)){
-                    outStream.writeObject(Model.downloadEmail(r, u));
-                    updateLog(u.getName() + " " + u.getSurname() + " has downloaded his mail"+ (r.getSinceDate() != null ? " since "+r.getSinceDate() : "") +".");
+                    ReplyDownloadEmail p = Model.downloadEmail(r, u);
+                    outStream.writeObject(p);
+                    if(p.getEmails() != null && p.getEmails().size() > 0)
+                        updateLog(u.getName() + " " + u.getSurname() + " has downloaded his mail"+ (r.getSinceDate() != null ? " since "+r.getSinceDate() : "") +".");
                 } else {
                     outStream.writeObject(new ReplyDownloadEmail(-1, null));
                     updateLog("WARRING: a request (RequestDownloadEmail) was received with wrong credentials.");

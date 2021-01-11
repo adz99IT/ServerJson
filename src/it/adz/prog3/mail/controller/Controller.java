@@ -4,6 +4,7 @@ import it.adz.prog3.mail.model.Model;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -20,6 +21,9 @@ public class Controller implements Initializable {
     @FXML
     private TextFlow textflow;
 
+    @FXML
+    ScrollPane scrollPane;
+
     public void setModel(Model model){
         this.model = model;
         cl = new ClientsListener(this.model, this);
@@ -27,7 +31,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
     }
 
     @FXML
