@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 //questa classe dispone dei metodi per controllare i dati
 public class Model {
-    boolean stopped;
+    private boolean stopped;
 
     public Model(){
         this.stopped = false;
