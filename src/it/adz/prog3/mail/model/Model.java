@@ -204,7 +204,7 @@ public class Model {
 
             ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
             }.getType());
-            if(allEmails == null || (allEmails != null && allEmails.size() == 0)){
+            if(allEmails == null || (allEmails != null && allEmails.size() == 0) ){
                 System.out.println("Err4");
                 return new ReplyEmailCancellation(-3, null);
             }
