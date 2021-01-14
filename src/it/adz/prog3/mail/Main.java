@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Main extends Application {
+    Model model;
 
     public static void main(String[] args){
         launch(args);
@@ -18,7 +19,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Model model = new Model();
+        model = new Model();
         Controller controller;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("view/ServerUI.fxml"));
@@ -32,5 +33,10 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop(){
+        model.setStopped();
     }
 }

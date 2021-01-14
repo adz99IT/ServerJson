@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 //ClientListener si mette in attesa di connessioni.
 public class ClientsListener extends Thread {
@@ -26,12 +27,18 @@ public class ClientsListener extends Thread {
         clients = new ThreadGroup("clients");
         try {
             s = new ServerSocket(8189);
+            s.setSoTimeout(1000);
             Platform.runLater(() ->{
                 c.updateLog("Server started.");
             });
-            while (true) {
+            while (!m.isStopped()) {
                 if(s != null && !s.isClosed()) {
-                    Socket incoming = s.accept();
+                    Socket incoming = null;
+                    try{
+                        incoming = s.accept();
+                    }catch(SocketTimeoutException e){
+                        continue;
+                    }
                     Runnable r = new ClientHandler(incoming, m, c);
                     new Thread(clients, r).start();
                 }

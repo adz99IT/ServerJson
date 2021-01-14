@@ -22,6 +22,19 @@ import java.util.regex.Pattern;
 
 //questa classe dispone dei metodi per controllare i dati
 public class Model {
+    boolean stopped;
+
+    public Model(){
+        this.stopped = false;
+    }
+
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped() {
+        this.stopped = true;
+    }
 
     public static User authenticate(String email, String password) {
         File file = new File(System.getProperty("user.dir") + "/files/users.json");
@@ -253,7 +266,7 @@ public class Model {
 
             ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
             }.getType());
-            if (allEmails.size() == 0) {
+            if (allEmails == null || allEmails.size() == 0) {
                 return new ReplyDownloadEmail(1, new ArrayList<Email>());
             }
 
