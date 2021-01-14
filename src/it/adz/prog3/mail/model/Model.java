@@ -101,7 +101,6 @@ public class Model {
         }
 
         if(delivered.size() > 0){
-            ArrayList<String> notFoundEmails2;
             Email e = new Email(UUID.randomUUID().toString(), new Date(), from.getEmail(), delivered, r.getSubject(), r.getText());
             return saveEmail(e, delivered, notDelivered);
         }else
@@ -205,7 +204,7 @@ public class Model {
 
             ArrayList<Email> allEmails = gson.fromJson(s, new TypeToken<ArrayList<Email>>() {
             }.getType());
-            if(allEmails.size() == 0){
+            if(allEmails == null || (allEmails != null && allEmails.size() == 0)){
                 System.out.println("Err4");
                 return new ReplyEmailCancellation(-3, null);
             }
