@@ -3,13 +3,11 @@ package it.adz.prog3.mail.model;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import it.adz.prog3.mail.comunicationobjects.*;
-import it.adz.prog3.mail.controller.Controller;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -266,7 +264,7 @@ public class Model {
             }
 
             if (r.getSinceDate() != null)
-                System.out.println(allEmails.removeIf(e -> e.getDate().before(r.getSinceDate())));
+                allEmails.removeIf(e -> e.getDate().before(r.getSinceDate()));
 
             System.out.println(allEmails.size() + " mails trovate.");
             return new ReplyDownloadEmail(1, allEmails);
@@ -309,8 +307,10 @@ public class Model {
             }
             allUsers.add(u);
         }
-        else
+        else {
             allUsers = new ArrayList<User>();
+            allUsers.add(u);
+        }
 
         try {
             fw = new FileWriter(file);
