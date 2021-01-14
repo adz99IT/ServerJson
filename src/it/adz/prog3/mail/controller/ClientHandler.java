@@ -11,8 +11,6 @@ public class ClientHandler implements Runnable  {
     Socket incoming;
     ObjectOutputStream outStream;
     ObjectInputStream inStream;
-    PrintWriter out;
-    Scanner in;
 
     Model m;
     User u;
@@ -40,7 +38,7 @@ public class ClientHandler implements Runnable  {
                     updateLog(u.getName() + " " + u.getSurname() + " has sent a mail.");
                 } else {
                     outStream.writeObject(new ReplySendEmail());
-                    updateLog("WARRING: a request (RequestSendEmail) was received with wrong credentials.");
+                    updateLog("WARNING: a request (RequestSendEmail) was received with wrong credentials.");
                 }
             } else if(obj instanceof RequestEmailCancellation){
                 System.out.println("New EmailCancellation Request");
@@ -50,7 +48,7 @@ public class ClientHandler implements Runnable  {
                     updateLog(u.getName() + " " + u.getSurname() + " has deleted some mails.");
                 } else {
                     outStream.writeObject(new ReplyEmailCancellation());
-                    updateLog("WARRING: a request (RequestEmailCancellation) was received with wrong credentials.");
+                    updateLog("WARNING: a request (RequestEmailCancellation) was received with wrong credentials.");
                 }
             } else if(obj instanceof RequestDownloadEmail){
                 System.out.println("New DownloadEmail Request "+new Date());
@@ -62,7 +60,7 @@ public class ClientHandler implements Runnable  {
                         updateLog(u.getName() + " " + u.getSurname() + " has downloaded his mail"+ (r.getSinceDate() != null ? " since "+r.getSinceDate() : "") +".");
                 } else {
                     outStream.writeObject(new ReplyDownloadEmail(-1, null));
-                    updateLog("WARRING: a request (RequestDownloadEmail) was received with wrong credentials.");
+                    updateLog("WARNING: a request (RequestDownloadEmail) was received with wrong credentials.");
                 }
             } else if(obj instanceof Login){
                 Login l = (Login)obj;
@@ -73,10 +71,10 @@ public class ClientHandler implements Runnable  {
                 }
                 else {
                     outStream.writeObject(new ReplyLogin());
-                    updateLog("WARRING: login attempt failed.");
+                    updateLog("WARNING: login attempt failed.");
                 }
             } else{
-                updateLog("WARRING: an unknown object has been received. It will be ignored.");
+                updateLog("WARNING: an unknown object has been received. It will be ignored.");
             }
 
         }catch(IOException | ClassNotFoundException e){

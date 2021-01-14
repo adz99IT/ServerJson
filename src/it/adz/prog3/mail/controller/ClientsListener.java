@@ -12,9 +12,8 @@ public class ClientsListener extends Thread {
     private ThreadGroup clients;
     public ServerSocket s;
 
-    Model m;
-    Controller c;
-
+    private Model m;
+    private Controller c;
 
     public ClientsListener(Model m, Controller c){
         s = null;

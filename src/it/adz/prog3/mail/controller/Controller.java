@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    Model model;
-    ClientsListener cl;
+    private Model model;
+    private ClientsListener cl;
 
     @FXML
     private TextFlow textflow;
