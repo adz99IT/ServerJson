@@ -218,9 +218,8 @@ public class Model {
                 }
                 exitCode = -2;
             }
-            System.out.println(exitCode);
+
             exitCode = deleted.size() == 0 ? -3 : exitCode;
-            System.out.println(exitCode);
 
             try {
                 fw = new FileWriter(file);
@@ -241,10 +240,7 @@ public class Model {
     public static ReplyDownloadEmail downloadEmail(RequestDownloadEmail r, User u) {
         File file = null;
         String s = null;
-        int exitCode = 1;
         Gson gson = new Gson();
-        ArrayList<UUID> deleted = new ArrayList<>();
-        FileWriter fw = null;
 
         if (r == null || u == null) {
             System.out.println("Err1");
