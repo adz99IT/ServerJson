@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable  {
                 RequestEmailCancellation r = (RequestEmailCancellation)obj;
                 if(login(r)){
                     outStream.writeObject(Model.deleteEmail(r, u));
-                    updateLog(u.getName() + " " + u.getSurname() + " has deleted some mails.");
+                    updateLog(u.getName() + " " + u.getSurname() + " has deleted some mail.");
                 } else {
                     outStream.writeObject(new ReplyEmailCancellation());
                     updateLog("WARNING: a request (RequestEmailCancellation) was received with wrong credentials.");
